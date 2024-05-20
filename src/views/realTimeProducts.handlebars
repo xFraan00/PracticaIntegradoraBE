@@ -22,6 +22,14 @@
         <input type="text" id="delete-id" required>
         <button onclick="sendDataDelete()">Eliminar producto</button>
     </section>
+    <section>
+        {{#each products}}
+        <h3>Productos</h3>
+        <p>
+            {{this.title}}
+        </p>
+        {{/each}}
+    </section>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
