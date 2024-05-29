@@ -1,0 +1,27 @@
+<div class="container">
+    <h1 class="mt-4 mb-4">Productos</h1>
+    <section class="row">
+        {{#each products.docs}}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">{{this.title}} (code: <span id="code">{{this.code}}</span>)</h3>
+                        <h4 class="card-subtitle mb-2 text-muted">Categoría: {{this.category}}</h4>
+                        <p class="card-text">{{this.description}}</p>
+                        <p class="card-text">Precio: ${{this.price}}</p>
+                        <button class="btn btn-primary" onclick="addToCart('{{this._id}}')">Agregar al carrito</button>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+    </section>
+    <div class="mt-4">
+        {{#if prevLink}}
+            <a href="{{prevLink}}" class="btn btn-secondary mr-2">Página anterior</a>
+        {{/if}}
+        <span class="mr-2">{{page}}</span>
+        {{#if nextLink}}
+            <a href="{{nextLink}}" class="btn btn-secondary">Página siguiente</a>
+        {{/if}}
+    </div>
+</div>

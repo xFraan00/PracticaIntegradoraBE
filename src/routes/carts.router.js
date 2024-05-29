@@ -3,22 +3,22 @@ import cartModel from "../dao/models/carts.model.js";
 
 const cartsRouter = Router();
 
-cartsRouter.post("/api/carts/", async (req, res) => {
+cartsRouter.post("/", async (req, res) => {
     try {
-        await cartModel.create({products: []});
+        await cartModel.create({});
         res.send({message: "Se creó el carrito correctamente"});
     } catch (error) {
         console.log(error);
     }
 });
 
-cartsRouter.get("/api/carts/:cid", async (req, res) => {
+cartsRouter.get("/:cid", async (req, res) => {
     try {
         const cartId = req.params.cid;
-        const cartContent = await cartModel.findOne({_id: cartId});
+        const cartContent = await cartModel.findOne({_id: cartId}).populate("products.product");
     
         if (cartContent) {
-            res.send({cartContent});
+            res.send({cart: cartContent});
         } else {
             res.send({message: "El carrito con el ID ingresado no existe"});
         };
@@ -27,31 +27,71 @@ cartsRouter.get("/api/carts/:cid", async (req, res) => {
     }
 });
 
-cartsRouter.post("/api/carts/:cid/product/:pid", async (req, res) => {
+cartsRouter.post("/:cid/products/:pid", async (req, res) => {
     try {
         const cartId = req.params.cid;
         const productId = req.params.pid;
 
         const cart = await cartModel.findOne({_id: cartId});
 
-        if (cart) {
-            const cartContent = cart.products;
+        cart.products.push({product: productId});
 
-            const productToCart = cartContent.some((product) => product === productId);
-
-            if (!productToCart) {
-                
-                    const addToCart = await cartModel.create({_id: cartId, quantity: 1})
-
-                    res.send({message: "Producto agregado al carrito correctamente", payload: addToCart});
-                 
-            };
-        } else {
-            console.log("El carrito no existe");
-        };
+        await cartModel.updateOne({_id: cartId}, cart);
+        res.send({message: "Producto agregado al carrito con éxito"});
     } catch (error) {
         console.log(error);
     };
 });
 
+cartsRouter.delete("/:cid/products/:pid", async (req, res) => {
+    try {
+        const cartId = req.params.cid;
+        const productId = req.params.pid;
+
+        const cart = await cartModel.findOne({_id: cartId});
+
+        const index = cart.products.findIndex((product) => product.id === productId);
+
+        cart.products.splice(index, 1)
+
+        cart.save()
+        res.send({message: "Producto eliminado del carrito con éxito"});
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+cartsRouter.put("/:cid/products/:pid", async (req, res) => {
+    try {
+        const cartId = req.params.cid;
+        const productId = req.params.pid;
+        const quantity = req.body;
+
+        const cart = await cartModel.findOne({_id: cartId});
+        const index = cart.products.find((product) => product.id === productId);
+
+        const valueQuantity = Object.values(quantity);
+        index.quantity = valueQuantity[0];
+        await cart.save();
+
+        res.send({message: "Cantidad actualizada con éxito"});
+    } catch (error) {
+        console.log(error);   
+    }
+});
+
+cartsRouter.delete("/:cid", async (req, res) => {
+    try {
+        const cartId = req.params.cid;
+    
+        const cart = await cartModel.findOne({_id: cartId});
+        cart.products = [];
+        await cart.save();
+        res.send({message: "Se vació el carrito exitosamente"});
+        
+    } catch (error) {
+        console.log(error);
+    }
+
+});
 export default cartsRouter;
