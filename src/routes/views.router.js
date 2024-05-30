@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import productModel from '../dao/models/products.model.js';
 import cartsModel from '../dao/models/carts.model.js';
-import { isAuthenticated, isNotAuthenticated } from '../middleware/auth.js';
+import { isNotAuthenticated } from '../middleware/auth.js';
 
 const viewsRouter = Router();
 
-viewsRouter.get('/', async (req, res) => {
+viewsRouter.get('/', async (_req, res) => {
     try {
         const products = await productModel.find().lean();
         res.render('home', { products });
@@ -43,7 +43,7 @@ viewsRouter.get('/products', async (req, res) => {
     }
 });
 
-viewsRouter.get('/carts', async (req, res) => {
+viewsRouter.get('/carts', async (_req, res) => {
     try {
         const cart = await cartsModel.findOne().sort({ createdAt: -1 }).populate('products.product').lean();
         if (cart) {
@@ -56,10 +56,12 @@ viewsRouter.get('/carts', async (req, res) => {
         res.render('cart', { message: 'Hubo un error al cargar el carrito' });
     }
 });
+viewsRouter.get('/login', isNotAuthenticated, (_req, res) => {
+    res.render('login');
+});
 
-viewsRouter.get('/login', isNotAuthenticated, (req, res) => { res.render('login') } );
-
-viewsRouter.get('/register', isNotAuthenticated, (req, res) => { res.render('register') } );
-
+viewsRouter.get('/register', isNotAuthenticated, (_req, res) => {
+    res.render('register');
+});
 
 export default viewsRouter;
