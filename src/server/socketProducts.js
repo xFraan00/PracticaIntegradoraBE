@@ -6,7 +6,6 @@ const socketProducts = (socketServer) => {
     socketServer.on("connection", (socket) => {
         console.log("Cliente conectado");
 
-        // Variable para almacenar el ID del carrito del usuario
         let userCartId = null;
 
         socket.on("newProduct", async (data) => {
@@ -34,16 +33,15 @@ const socketProducts = (socketServer) => {
 
         socket.on("addToCart", async (productId) => {
             try {
-                // Verificar si el usuario ya tiene un carrito
                 if (!userCartId) {
-                    // Si el usuario no tiene un carrito, crea uno nuevo en la base de datos
-                    const newCart = await cartModel.create({ /* Coloca aquí cualquier información adicional que desees para el carrito */ });
+                    
+                    const newCart = await cartModel.create({});
 
-                    // Almacena el ID del nuevo carrito
+                    
                     userCartId = newCart._id;
                 }
 
-                // Agrega el producto al carrito del usuario
+                
                 await cartModel.findByIdAndUpdate(userCartId, { $addToSet: { products: { product: productId } } });
 
                 console.log("Producto agregado al carrito con éxito");
@@ -51,7 +49,6 @@ const socketProducts = (socketServer) => {
                 console.error("Error al agregar producto al carrito:", error);
             }
         });
-    }); // Cierra el socket.on("connection")
-}; // Cierra el socketProducts
-
+    }); 
+}; 
 export default socketProducts;

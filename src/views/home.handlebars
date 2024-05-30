@@ -1,18 +1,6 @@
-<div class="container">
-    <h1>Productos</h1>
-    <section class="row">
-        {{#each products}}
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h3 class="card-title">{{this.title}}</h3>
-                    <h4 class="card-subtitle mb-2 text-muted">ID: {{this.id}}</h4>
-                    <h5 class="card-subtitle mb-2 text-muted">Categoría: {{this.category}}</h5>
-                    <p class="card-text">{{this.description}}</p>
-                    <p class="card-text">Precio: ${{this.price}}</p>
-                </div>
-            </div>
-        </div>
-        {{/each}}
-    </section>
+<div class="container mt-5">
+    <h1>Bienvenido</h1>
+    <p>¡Gracias por visitar nuestra tienda en línea! Aquí podrás encontrar una amplia selección de productos.</p>
+    <a href="/register" class="btn btn-primary">Registrarse</a>
+    <a href="/login" class="btn btn-primary">Iniciar sesión</a>
 </div>

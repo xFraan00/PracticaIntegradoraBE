@@ -1,3 +1,4 @@
+
 <body>
     <div class="container mt-5">
         <h1>Carrito de Compras</h1>
@@ -7,7 +8,7 @@
                     <li class="list-group-item">
                         <p>Producto: {{this.product.title}}</p>
                         <p>Precio: ${{this.product.price}}</p>
-                        <p>Categoria: {{this.product.category}}</p>
+                        <p>Categoría: {{this.product.category}}</p>
                     </li>
                 {{/each}}
             {{else}}
@@ -17,14 +18,14 @@
             {{/if}}
         </ul>
 
-        
-        <button onclick="borrarCarrito('{{cart._id}}')">Borrar Carrito</button>
+        <div class="mt-3">
+            <button class="btn btn-danger mr-2" onclick="borrarCarrito('{{cart._id}}')">Borrar Carrito</button>
+            <a href="/products" class="btn btn-primary">Ver Productos</a>
+        </div>
     </div>
-
 
     <script>
         function borrarCarrito(cartId) {
-            
             if (confirm("¿Estás seguro de que deseas borrar este carrito?")) {
                 fetch(`/carts/${cartId}`, {
                     method: 'DELETE'
@@ -37,7 +38,6 @@
                 })
                 .then(data => {
                     alert(data.message); 
-                
                 })
                 .catch(error => {
                     console.error('Error:', error);
